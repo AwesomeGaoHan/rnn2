@@ -19,7 +19,7 @@ class Net(nn.Module):
         super(Net, self).__init__()
 
         self.rnn = nn.RNN(
-            input_size=input_size,
+            input_size=input_size,  # input_size就是word_vec
             hidden_size=hidden_size,
             num_layers=1,
             batch_first=True
@@ -30,10 +30,10 @@ class Net(nn.Module):
         self.linear = nn.Linear(hidden_size, output_size)
 
     def forward(self, x, hidden_prev):
-        out, hidden_prev = self.rnn(x, hidden_prev)
-        out = out.view(-1, hidden_size)
-        out = self.linear(out)
-        out = out.unsqueeze(dim=0)
+        out, hidden_prev = self.rnn(x, hidden_prev)  # rnn初始化的h与其最后输出的h结构是一样的
+        # out = out.view(-1, hidden_size)  这一行代码把维度去掉了一个，没有任何用
+        out = self.linear(out)  # 线性层的输入可以是任意维度的，但是只会对最后一个维度进行操作
+        # out = out.unsqueeze(dim=0)  # 没有用的操作
 
         return out, hidden_prev
 
